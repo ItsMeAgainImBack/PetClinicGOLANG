@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  petclinicgolang:
+    image: petclinicgolang
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/golang_clinic
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: postgres:12
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+# retirar o comentário para acessar o POSTGRES usando o Dbeaver,  se conflitar com
+# outro POSTGRES na mesma porta   > sudo service postgresql stop   > net stop postgresql-x64-16
+#    ports:
+#      - '5432:5432'
+    volumes:
+      - ./database/create_postgres.sql:/docker-entrypoint-initdb.d/create_postgres.sql
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}
